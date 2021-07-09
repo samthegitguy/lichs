@@ -22,13 +22,11 @@
 </p>
 
 ## Info and requirements
-* <ins>Uses Lichess</ins>, which means that you need to have a Lichess account
-* Only Classical and Rapid games because the Lichess API doesn't allow anything else (quite frankly, Blitz and Bullet like games wouldn't be a lot of fun since you would have to input the coordinates really fast)
+* Uses [Lichess](https://lichess.org/), which means that you need to have a Lichess account
+* Only Classical and Rapid games because the Lichess API doesn't allow anything else
 * This program uses [SAN](https://en.wikipedia.org/wiki/Algebraic_notation_(chess))-notation, see the [Important](#Important)-section.
 
-Lichs uses the Lichess API (more exactly [berserk](https://github.com/rhgrant10/berserk)) to make it possible for you to play against other real players directly in the terminal on Lichess servers. <ins>This project is still in its early stages; there's no chat support, pretty bad graphics, no ranked games and probably some bugs.</ins>
-
-If like this project, be sure to also check out [Nick Zuber's Chs-project](https://github.com/nickzuber/chs), since it was his project that inspired me to do this in the first place.
+Lichs uses the Lichess API (more exactly [berserk](https://github.com/rhgrant10/berserk)) to make it possible for you to play against other real players directly in the terminal on Lichess servers. If you like this project, be sure to also check out [Nick Zuber's Chs-project](https://github.com/nickzuber/chs), since it was his project that inspired me to do this in the first place.
 
 
 ## Installation
@@ -50,6 +48,10 @@ and the program will be installed. The next step is to generate a personal API-k
 
 ## Usage
 
+<h1 align="center">
+  <img src="docs/images/carbon.png">
+</h1>
+
 You start playing by typing the command `lichs` into your terminal:
 
 ```
@@ -68,7 +70,7 @@ What kind of chess do you want to play?
 Enter 1 or 2:
 ```
 
-That should be pretty self-explanatory, you basically choose between Rapid and Classical (the Lichess API doens't support anything else) by entering either 1 or 2. The timing of the games is also listed there; Rapid is 10min and Classical 30min (without extra-time, I might add support for extra-time later)
+That should be pretty self-explanatory, you basically choose between Rapid and Classical (the Lichess API doesn't support anything else) by entering either 1 or 2. The timing of the games is also listed there; Rapid is 10min and Classical 30min (without extra-time, I might add support for extra-time later)
 
 When you have input either 1 or 2, the program will start to search after an opponent. It shouldn't take long and the game should start pretty quickly.
 
@@ -89,11 +91,11 @@ p p p p p p p p
 P P P P . P P P
 R N B Q K B N R
 ```
-Above is an example of the board displayed. <ins>Note:</ins> at the moment the board is always displayed from the white's side, because I don't know how to fix this.
+Above is an example of the board displayed.
 
 
 ### Important
-When the program asks for your move, you need to input the move in [standard algebraic notation](https://en.wikipedia.org/wiki/Algebraic_notation_(chess)) (SAN). Basically, it specifies <ins>which piece</ins> to move and <ins>to where</ins>. As an example, to move a knight from g1 to f3, you type in **Nf3** (N is for Knight, since Rook uses K). If you want to learn more, click on the link above.
+When the program asks for your move, you need to input the move in [standard algebraic notation](https://en.wikipedia.org/wiki/Algebraic_notation_(chess)) (SAN). Basically, it specifies <ins>which piece</ins> to move and <ins>to where</ins>. As an example, to move a knight from g1 to f3, you type in **Nf3** (N is for Knight, since King uses K). If you want to learn more, click on the link above.
 
 The program will inform you if you can't make the move you have input.
 

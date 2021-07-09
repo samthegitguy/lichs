@@ -31,7 +31,6 @@ for event in board.stream_incoming_events():
 
     elif event['type'] == 'gameStart':
 
-        #print(client.games.export(event['game']['id']))
         isWhite = True
         color = "Black" # We set the color to the opposite color of the player
 
@@ -42,5 +41,6 @@ for event in board.stream_incoming_events():
             print("White's turn...")
         else:
             print("You're playing as white!")
-        game = Game_test.Game(board, event['game']['id'], player_id, isWhite, color)
+            
+        game = Game_test.Game(board, event['game']['id'], player_id, isWhite, color, 10)
         game.start()

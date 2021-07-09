@@ -1,4 +1,5 @@
 import threading
+import datetime
 import chess
 
 import os
@@ -8,22 +9,25 @@ runOnce = True
 
 class Game(threading.Thread):
 
-    def __init__(self, board, game_id, player_id, isWhite, color, **kwargs):
+    def __init__(self, board, game_id, player_id, isWhite, color, time, **kwargs):
         super().__init__(**kwargs)
         self.game_id = game_id
         self.board = board
         self.stream = board.stream_game_state(game_id)
-        self.current_state = next(self.stream)
         self.player_id = player_id
         self.isWhite = isWhite
         self.color = color
+        self.clock = {'white': datetime.datetime(1970, 1, 1, 0, time, 0), 'black': datetime.datetime(1970, 1, 1, 0, time, 0)}
+        self.first_move = 2 # returns false after 2 moves have been made
         if self.isWhite:
             self.white_first_move()
 
 
     def run(self):
         for event in self.stream:
-            if event['type'] == 'gameState':
+            if event['type'] == "gameFull":
+                self.handle_game_full(event)
+            elif event['type'] == 'gameState':
                 self.handle_state_change(event)
             elif event['type'] == 'chatLine':
                 self.handle_chat_line(event)
@@ -39,7 +43,13 @@ class Game(threading.Thread):
             os._exit(0)
 
         else:
-            if (len(game_state["moves"].split())-1)%2==self.isWhite:
+            # update time
+            self.clock['white'] = game_state['wtime']
+            self.clock['black'] = game_state['btime']
+
+            # there's no "amount of turns" variable in the JSON, so we have to construct one manually
+            turn = len(game_state["moves"].split())-1
+            if turn%2 == self.isWhite:
 
                 print(self.color + " moved.")
                 print()
@@ -48,7 +58,14 @@ class Game(threading.Thread):
                 self.display_board()
                 print()
 
+                # decrement first move counter
+                if self.first_move:
+                    self.first_move -= 1
+
                 self.check_mate(chess_board)
+
+                # user move start time
+                move_start = datetime.datetime.now()
 
                 while(True):
                     try:
@@ -61,6 +78,12 @@ class Game(threading.Thread):
                         else:
                             self.board.make_move(self.game_id, chess_board.parse_san(move))
                             chess_board.push_san(move)
+                            if self.first_move:
+                                self.first_move -= 1
+                            elif self.color[0] == 'b':
+                                self.clock['white'] -= datetime.datetime.now() - move_start
+                            else:
+                                self.clock['black'] -= datetime.datetime.now() - move_start
                     except:
                         print("You can't make that move. Try again!")
                         continue
@@ -71,6 +94,9 @@ class Game(threading.Thread):
                 print()
                 print(self.color + "'s turn...")
 
+    def handle_game_full(self, gamefull):
+        # TODO Write this method
+        pass
 
     def handle_draw_state(self, game_state):
         # TODO Write this method
@@ -100,7 +126,7 @@ class Game(threading.Thread):
             break
 
         self.display_board()
-        print()
+        self.first_move -= 1
         print(self.color + "'s turn...")
 
     def check_mate(self, chess_board):
@@ -124,7 +150,13 @@ class Game(threading.Thread):
     def display_board(self):
         global chess_board
 
+        # display the chess board, if the the player's color is black then flip the board 
         if self.isWhite:
             print(chess_board)
         else:
             print(chess_board.transform(chess.flip_vertical).transform(chess.flip_horizontal))
+
+        # print clock
+        print("[%02d:%02d : %02d:%02d]" % (self.clock['white'].minute, self.clock['white'].second, 
+                                           self.clock['black'].minute, self.clock['black'].second))
+        print()
